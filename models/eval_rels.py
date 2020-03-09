@@ -73,11 +73,11 @@ def val_batch(batch_num, b, evaluator, evaluator_multiple_preds, evaluator_list,
         }
         all_pred_entries.append(pred_entry)
 
-        eval_entry(conf.mode, gt_entry, pred_entry, evaluator, evaluator_multiple_preds, 
-                   evaluator_list, evaluator_multiple_preds_list)
+        #eval_entry(conf.mode, gt_entry, pred_entry, evaluator, evaluator_multiple_preds, 
+                   #evaluator_list, evaluator_multiple_preds_list)
 
 
-evaluator = BasicSceneGraphEvaluator.all_modes()
+#evaluator = BasicSceneGraphEvaluator.all_modes()
 evaluator_multiple_preds = BasicSceneGraphEvaluator.all_modes(multiple_preds=True)
 evaluator_list = [] # for calculating recall of each relationship except no relationship
 evaluator_multiple_preds_list = []
@@ -98,10 +98,10 @@ if conf.cache is not None and os.path.exists(conf.cache):
             'gt_boxes': val.gt_boxes[i].copy(),
         }
 
-        eval_entry(conf.mode, gt_entry, pred_entry, evaluator, evaluator_multiple_preds, 
-                   evaluator_list, evaluator_multiple_preds_list)
+        #eval_entry(conf.mode, gt_entry, pred_entry, evaluator, evaluator_multiple_preds, 
+                   #evaluator_list, evaluator_multiple_preds_list)
 
-    recall = evaluator[conf.mode].print_stats()
+    #recall = evaluator[conf.mode].print_stats()
     recall_mp = evaluator_multiple_preds[conf.mode].print_stats()
     
     mean_recall = calculate_mR_from_evaluator_list(evaluator_list, conf.mode, save_file=conf.save_rel_recall)
@@ -109,10 +109,10 @@ if conf.cache is not None and os.path.exists(conf.cache):
 
 else:
     detector.eval()
-    for val_b, batch in enumerate(tqdm(val_loader)):
-        val_batch(conf.num_gpus*val_b, batch, evaluator, evaluator_multiple_preds, evaluator_list, evaluator_multiple_preds_list)
+    #for val_b, batch in enumerate(tqdm(val_loader)):
+        #val_batch(conf.num_gpus*val_b, batch, evaluator, evaluator_multiple_preds, evaluator_list, evaluator_multiple_preds_list)
 
-    recall = evaluator[conf.mode].print_stats()
+    #recall = evaluator[conf.mode].print_stats()
     recall_mp = evaluator_multiple_preds[conf.mode].print_stats()
     
     mean_recall = calculate_mR_from_evaluator_list(evaluator_list, conf.mode, save_file=conf.save_rel_recall)
