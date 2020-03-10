@@ -1,5 +1,5 @@
 #export PATH := /home/yuweihao/cuda-9.0/bin:$(PATH)
-export PATH := /usr/local/cuda/bin:$(PATH)
+export PATH := /usr/local/cuda-9.0/bin:$(PATH)
 #export PYTHONPATH=/content/KERN
 
 all: draw_rectangles box_intersections nms roi_align
