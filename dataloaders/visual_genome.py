@@ -50,15 +50,22 @@ class VG(Dataset):
         self.image_file = image_file
         self.filter_non_overlap = filter_non_overlap
         self.filter_duplicate_rels = filter_duplicate_rels and self.mode == 'train'
-
-        #self.split_mask, self.gt_boxes, self.gt_classes, self.relationships = load_graphs(
-            #self.roidb_file, self.mode, num_im, num_val_im=num_val_im,
-            #filter_empty_rels=filter_empty_rels,
-            #filter_non_overlap=self.filter_non_overlap and self.is_train,
-        #)
+        self.gt_boxes=np.arange(40).reshape(10,4)
+        self.relationships=np.arange(10).reshape(5,2)
+        self.gt_classes = np.arange(10).reshape(10,1)
+	
+	#self.get_boxes=np.arange(40).reshape(10,4)
+#        self.split_mask, self.gt_boxes, self.gt_classes, self.relationships = load_graphs(
+#           self.roidb_file, self.mode, num_im, num_val_im=num_val_im,
+#            filter_empty_rels=filter_empty_rels,
+#            filter_non_overlap=self.filter_non_overlap and self.is_train,
+#        )
+	#self.gt_boxes=[[]]
+	#self.relationships=[[]]
 
         self.filenames = load_image_filenames(image_file)
-        self.filenames = [self.filenames[i] for i in np.where(self.split_mask)[0]]
+
+#        self.filenames = [self.filenames[i] for i in np.where(self.split_mask)[0]]
 
         self.ind_to_classes, self.ind_to_predicates = load_info(dict_file)
 
@@ -143,8 +150,7 @@ class VG(Dataset):
 
         # Optionally flip the image if we're doing training
         flipped = self.is_train and np.random.random() > 0.5
-        #gt_boxes = self.gt_boxes[index].copy()
-        gt_boxes = np.zeros(10)
+        gt_boxes = self.gt_boxes[0].copy()
 
         # Boxes are already at BOX_SCALE
         if self.is_train:
@@ -174,8 +180,7 @@ class VG(Dataset):
         else:
             im_size = (IM_SCALE, IM_SCALE, img_scale_factor)
 
-        #gt_rels = self.relationships[index].copy()
-        gt_rels = np.zeros(10)
+        gt_rels = self.relationships[0].copy()
         if self.filter_duplicate_rels:
             # Filter out dupes!
             assert self.mode == 'train'
@@ -190,8 +195,7 @@ class VG(Dataset):
             'img': self.transform_pipeline(image_unpadded),
             'img_size': im_size,
             'gt_boxes': gt_boxes,
-            #'gt_classes': self.gt_classes[index].copy(),
-            'gt_classes': np.zeros(10),
+            'gt_classes': self.gt_classes[0].copy(),
             'gt_relations': gt_rels,
             'scale': IM_SCALE / BOX_SCALE,  # Multiply the boxes by this.
             'index': index,
@@ -202,7 +206,7 @@ class VG(Dataset):
         if self.rpn_rois is not None:
             entry['proposals'] = self.rpn_rois[index]
 
-        assertion_checks(entry)
+    #    assertion_checks(entry)
         return entry
 
     def __len__(self):
@@ -260,7 +264,7 @@ def load_image_filenames(image_file, image_dir=VG_IMAGES):
         filename = os.path.join(image_dir, basename)
         if os.path.exists(filename):
             fns.append(filename)
-    assert len(fns) == 108073
+#    assert len(fns) == 108073
     return fns
 
 
