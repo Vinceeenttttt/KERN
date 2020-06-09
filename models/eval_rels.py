@@ -58,12 +58,12 @@ def val_batch(batch_num, b, evaluator, evaluator_multiple_preds, evaluator_list,
         det_res = [det_res]
 
     for i, (boxes_i, objs_i, obj_scores_i, rels_i, pred_scores_i) in enumerate(det_res):
-        gt_entry = {
-            'gt_classes': val.gt_classes[batch_num + i].copy(),
-            'gt_relations': val.relationships[batch_num + i].copy(),
-            'gt_boxes': val.gt_boxes[batch_num + i].copy(),
-        }
-        assert np.all(objs_i[rels_i[:,0]] > 0) and np.all(objs_i[rels_i[:,1]] > 0)
+       # gt_entry = {
+       #     'gt_classes': val.gt_classes[batch_num + i].copy(),
+       #     'gt_relations': val.relationships[batch_num + i].copy(),
+       #     'gt_boxes': val.gt_boxes[batch_num + i].copy(),
+       # }
+        #assert np.all(objs_i[rels_i[:,0]] > 0) and np.all(objs_i[rels_i[:,1]] > 0)
         # assert np.all(rels_i[:,2] > 0)
 
         pred_entry = {
@@ -76,10 +76,10 @@ def val_batch(batch_num, b, evaluator, evaluator_multiple_preds, evaluator_list,
         all_pred_entries.append(pred_entry)
 
         #eval_entry(conf.mode, gt_entry, pred_entry, evaluator, evaluator_multiple_preds, 
-                   #evaluator_list, evaluator_multiple_preds_list)
+         #          evaluator_list, evaluator_multiple_preds_list)
 
 
-#evaluator = BasicSceneGraphEvaluator.all_modes()
+evaluator = BasicSceneGraphEvaluator.all_modes()
 evaluator_multiple_preds = BasicSceneGraphEvaluator.all_modes(multiple_preds=True)
 evaluator_list = [] # for calculating recall of each relationship except no relationship
 evaluator_multiple_preds_list = []
@@ -100,10 +100,10 @@ if conf.cache is not None and os.path.exists(conf.cache):
             'gt_boxes': val.gt_boxes[i].copy(),
         }
 
-        #eval_entry(conf.mode, gt_entry, pred_entry, evaluator, evaluator_multiple_preds, 
-                   #evaluator_list, evaluator_multiple_preds_list)
+        eval_entry(conf.mode, gt_entry, pred_entry, evaluator, evaluator_multiple_preds, 
+                   evaluator_list, evaluator_multiple_preds_list)
 
-    #recall = evaluator[conf.mode].print_stats()
+    recall = evaluator[conf.mode].print_stats()
     recall_mp = evaluator_multiple_preds[conf.mode].print_stats()
     
     mean_recall = calculate_mR_from_evaluator_list(evaluator_list, conf.mode, save_file=conf.save_rel_recall)
@@ -111,14 +111,14 @@ if conf.cache is not None and os.path.exists(conf.cache):
 
 else:
     detector.eval()
-    #for val_b, batch in enumerate(tqdm(val_loader)):
-        #val_batch(conf.num_gpus*val_b, batch, evaluator, evaluator_multiple_preds, evaluator_list, evaluator_multiple_preds_list)
+    for val_b, batch in enumerate(tqdm(val_loader)):
+        val_batch(conf.num_gpus*val_b, batch, evaluator, evaluator_multiple_preds, evaluator_list, evaluator_multiple_preds_list)
 
     #recall = evaluator[conf.mode].print_stats()
-    recall_mp = evaluator_multiple_preds[conf.mode].print_stats()
+    #recall_mp = evaluator_multiple_preds[conf.mode].print_stats()
     
-    mean_recall = calculate_mR_from_evaluator_list(evaluator_list, conf.mode, save_file=conf.save_rel_recall)
-    mean_recall_mp = calculate_mR_from_evaluator_list(evaluator_multiple_preds_list, conf.mode, multiple_preds=True, save_file=conf.save_rel_recall)
+    #mean_recall = calculate_mR_from_evaluator_list(evaluator_list, conf.mode, save_file=conf.save_rel_recall)
+    #mean_recall_mp = calculate_mR_from_evaluator_list(evaluator_multiple_preds_list, conf.mode, multiple_preds=True, save_file=conf.save_rel_recall)
 
     if conf.cache is not None:
         with open(conf.cache,'wb') as f:
