@@ -1,3 +1,5 @@
+import sys;
+sys.path.append('/content/KERN/Pipeline')
 
 from dataloaders.visual_genome import VGDataLoader, VG
 import numpy as np
